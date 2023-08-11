@@ -13,22 +13,33 @@ interface IDishList {
 
 const DishList = ({ search, activeFilter, activeOrder }: IDishList) => {
   const [dishes, setDishes] = useState(dishList)
-
   const checkBySearch = (title: string) => {
     const regex = new RegExp(search, 'i')
     return regex.test(title)
   }
   const checkByFilter = (id: number) => (activeFilter ? activeFilter === id : true)
-
-  const listByOrder = (list: typeof dishList, prop: IOrderOptions) =>
+  const orderByAsc = (list: typeof dishList, prop: 'size' | 'serving' | 'price') =>
     list.sort((a, b) => (a[prop] > b[prop] ? 1 : -1))
+
+  const listByOrder = (list: typeof dishList) => {
+    switch (activeOrder) {
+      case 'porcao':
+        return orderByAsc(list, 'size')
+      case 'qtd_pessoas':
+        return orderByAsc(list, 'serving')
+      case 'preco':
+        return orderByAsc(list, 'price')
+      default:
+        return list
+    }
+  }
 
   useEffect(() => {
     const newDishList = dishList.filter(
       (dish) => checkBySearch(dish.title) && checkByFilter(dish.category.id)
     )
-    setDishes(listByOrder(newDishList, activeOrder))
-  }, [search, activeFilter])
+    setDishes(listByOrder(newDishList))
+  }, [search, activeFilter, activeOrder])
 
   return (
     <div className={styles.list}>
