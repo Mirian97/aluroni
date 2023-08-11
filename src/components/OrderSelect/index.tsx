@@ -1,13 +1,11 @@
 import classNames from 'classnames'
-import orderList, { IOrderOptions } from 'constants/orderList'
+import { IOrderList, IOrderOptions } from 'constants/orderList'
 import { Dispatch, SetStateAction, useState } from 'react'
 import { MdKeyboardArrowDown, MdKeyboardArrowUp } from 'react-icons/md'
 import styles from './OrderSelect.module.scss'
 
-type IOrderItem = (typeof orderList)[0]
-
 interface IOrderSelect {
-  orderList: Array<IOrderItem>
+  orderList: IOrderList
   activeOrder: IOrderOptions
   setActiveOrder: Dispatch<SetStateAction<IOrderOptions>>
 }
@@ -16,7 +14,8 @@ const OrderSelect = ({ orderList, activeOrder, setActiveOrder }: IOrderSelect) =
   const [showOptions, setShowOptions] = useState(false)
   const toggleShowOptions = () => setShowOptions(!showOptions)
   const closeOptions = () => setShowOptions(false)
-  const selectOrderOption = (optionName: IOrderOptions) => setActiveOrder(optionName)
+  const selectOrderOption = (optionValue: IOrderOptions) => setActiveOrder(optionValue)
+  const orderName = orderList.find((item) => item.value === activeOrder)?.name
   const IconSelect = showOptions ? (
     <MdKeyboardArrowUp size={24} />
   ) : (
@@ -32,7 +31,7 @@ const OrderSelect = ({ orderList, activeOrder, setActiveOrder }: IOrderSelect) =
       onClick={toggleShowOptions}
       onBlur={closeOptions}
     >
-      <span>{activeOrder || 'Ordernar por'}</span>
+      <span>{orderName || 'Ordernar por'}</span>
       {IconSelect}
       <div
         className={classNames({
@@ -44,7 +43,7 @@ const OrderSelect = ({ orderList, activeOrder, setActiveOrder }: IOrderSelect) =
           <span
             key={value}
             className={styles.order__option}
-            onClick={() => selectOrderOption(name)}
+            onClick={() => selectOrderOption(value)}
           >
             {name}
           </span>
