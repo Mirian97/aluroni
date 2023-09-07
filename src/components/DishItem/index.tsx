@@ -1,5 +1,6 @@
 import classNames from 'classnames'
 import dishList from 'constants/dishList'
+import { memo } from 'react'
 import { formatMoneyBRL } from 'utils/formatters'
 import styles from './DishItem.module.scss'
 
@@ -44,4 +45,4 @@ const DishItem = (props: IDishItem) => {
   )
 }
 
-export default DishItem
+export default memo(DishItem)
